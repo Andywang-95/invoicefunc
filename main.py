@@ -24,10 +24,10 @@ class window_controller(QtWidgets.QWidget):
         self.ui.save.clicked.connect(self.save_path)
         self.ui.start.clicked.connect(self.run)
     def open_path(self):
-        filename, filetype = QFileDialog.getOpenFileName(self,"選擇待查資料","D:/","CSV File(*.csv);;Excel File(*.xlsx)")# start path
+        filename, filetype = QFileDialog.getOpenFileName(self,"選擇待查資料","D:\Python\電子發票\電子發票\發票明細CSV檔","CSV File(*.csv);;Excel File(*.xlsx)")# start path
         self.ui.open_text.setText(filename)
     def save_path(self):
-        folder = QFileDialog.getExistingDirectory(self,"選擇結果生成路徑","D:/")# start path
+        folder = QFileDialog.getExistingDirectory(self,"選擇結果生成路徑","D:\Python\電子發票\電子發票")# start path
         self.ui.save_text.setText(folder)
     def output(self, command = '\u2713 Successful'):
         if command != '\u2713 Successful':
@@ -46,11 +46,11 @@ class window_controller(QtWidgets.QWidget):
         if len(invoice_b_text) != 10:
             self.output('發票起號錯誤')
             return
-        if len(invoice_e_text) != 10:
+        if len(invoice_e_text) != 10 or invoice_e_text[:2].upper() != invoice_b_text[:2].upper() or int(invoice_e_text[2:]) <= int(invoice_b_text[2:]):
             self.output('發票訖號錯誤')
             return
         if open_text == '':
-            self.output('資料檔案未選擇')
+            self.output('資料來源未選擇')
             return
         if save_text == '':
             self.output('儲存位置未選擇')
@@ -59,8 +59,18 @@ class window_controller(QtWidgets.QWidget):
         df = pd.read_csv(open_text)
         try:
             df_taxs = df['銷售人統編']
-            if df_taxs[0] != int(tax_text):
-                self.output('檔案統編不一致，請重新選擇檔案')
+            # 確認整個欄位的'銷售人統編'是否一致
+            tax_check = []
+            for tax in df_taxs:
+                if tax not in tax_check:
+                    tax_check.append(tax)
+            # 確認檔案內所有統編是否一致
+            if len(tax_check) > 1:
+                self.output('檔案內有多個統編，請重新選擇檔案')
+                return
+            # 確認所選擇的統編和檔案內的是否一致
+            if tax_check[0] != int(tax_text):
+                self.output('檔案內統編與所選不一致，請重新確認')
                 return
             else:
                 self.output()
@@ -68,3 +78,16 @@ class window_controller(QtWidgets.QWidget):
             self.output('格式不匹配，請確認檔案內容是否正確')
         except Exception as e:
             self.output(e)
+        # 讀取發票開頭字母
+        inv_title = invoice_b_text[:2].upper()
+        inv_b = int(invoice_b_text[2:])
+        inv_e = int(invoice_e_text[2:])
+        inv_nums = []
+        df_inv = df['發票起號']
+        for inv in df_inv:
+            # 判斷是否為所選擇的發票開頭
+            if inv[:2].upper() == inv_title:
+                if inv_b < int(inv[2:]) < inv_e:
+                    inv_nums.append(inv[2:])
+        inv_nums.sort()
+        print(inv_nums)
