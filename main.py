@@ -24,11 +24,11 @@ class window_controller(QtWidgets.QWidget):
         self.ui.save.clicked.connect(self.save_path)
         self.ui.start.clicked.connect(self.run)
     def open_path(self):
-        filename, filetype = QFileDialog.getOpenFileName(self,"選擇待查資料","D:\Python\電子發票\電子發票\發票明細CSV檔","CSV File(*.csv);;Excel File(*.xlsx)")# start path
+        filename, filetype = QFileDialog.getOpenFileName(self,"選擇待查資料","D:","CSV File(*.csv)")# start path
         self.ui.open_text.setText(filename)
     def save_path(self):
-        folder = QFileDialog.getExistingDirectory(self,"選擇結果生成路徑","D:\Python\電子發票\電子發票")# start path
-        self.ui.save_text.setText(folder)
+        filename, filetype = QFileDialog.getOpenFileName(self,"選擇匯出出資料","D:","CSV File(*.csv)")# start path
+        self.ui.save_text.setText(filename)
     def output(self, command = '\u2713 Successful'):
         if command != '\u2713 Successful':
             self.ui.output_text.setStyleSheet("QLabel{color: red;}")
@@ -53,7 +53,7 @@ class window_controller(QtWidgets.QWidget):
             self.output('資料來源未選擇')
             return
         if save_text == '':
-            self.output('儲存位置未選擇')
+            self.output('輸出檔案位置未選擇')
             return
         # 讀取csv檔案
         df = pd.read_csv(open_text)
@@ -78,16 +78,32 @@ class window_controller(QtWidgets.QWidget):
             self.output('格式不匹配，請確認檔案內容是否正確')
         except Exception as e:
             self.output(e)
-        # 讀取發票開頭字母
+        # 讀取發票字軌
         inv_title = invoice_b_text[:2].upper()
         inv_b = int(invoice_b_text[2:])
         inv_e = int(invoice_e_text[2:])
         inv_nums = []
+        result = []
         df_inv = df['發票起號']
+        print('開始讀取發票：字軌：[%s]，起號：[%d]，訖號：[%d]'%(inv_title, inv_b, inv_e))
         for inv in df_inv:
             # 判斷是否為所選擇的發票開頭
             if inv[:2].upper() == inv_title:
-                if inv_b < int(inv[2:]) < inv_e:
-                    inv_nums.append(inv[2:])
+                if inv_b <= int(inv[2:]) and int(inv[2:]) <= inv_e:
+                    inv_nums.append(int(inv[2:]))
+        inv_nums.append(inv_e+1)
         inv_nums.sort()
-        print(inv_nums)
+        print('全部發票號碼檢索完畢，共%d筆'%len(inv_nums))
+        # print(inv_nums)
+        checked_inv = inv_nums[0]
+        for inv in inv_nums[1:]:
+            if inv - checked_inv > 1:
+                result.append([tax_text, str(int(df['資料所屬年月'][0])+1), inv_title, "%08d"%(checked_inv+1), "%08d"%(inv-1), "07"])
+            checked_inv = inv
+        print('未開立發票區間共%d筆'%len(result))
+        for i in result:
+            print(i)
+        print('\n\n')
+        
+        df_result = pd.DataFrame(result)
+        df_result.to_csv(save_text, mode='a+', header=False, index=False)
