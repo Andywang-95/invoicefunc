@@ -88,8 +88,8 @@
               </property>
               <property name="font">
                <font>
-                <family>Agency FB</family>
-                <pointsize>10</pointsize>
+                <family>新細明體</family>
+                <pointsize>11</pointsize>
                </font>
               </property>
               <property name="styleSheet">
@@ -117,7 +117,7 @@
               <property name="font">
                <font>
                 <family>Arial</family>
-                <pointsize>10</pointsize>
+                <pointsize>12</pointsize>
                </font>
               </property>
               <property name="focusPolicy">
@@ -144,8 +144,8 @@
               </property>
               <property name="font">
                <font>
-                <family>Agency FB</family>
-                <pointsize>10</pointsize>
+                <family>新細明體</family>
+                <pointsize>11</pointsize>
                 <weight>50</weight>
                 <bold>false</bold>
                 <underline>false</underline>
@@ -210,8 +210,8 @@
               </property>
               <property name="font">
                <font>
-                <family>Agency FB</family>
-                <pointsize>10</pointsize>
+                <family>新細明體</family>
+                <pointsize>11</pointsize>
                </font>
               </property>
               <property name="styleSheet">
@@ -287,14 +287,15 @@
               </property>
               <property name="font">
                <font>
-                <family>Arial</family>
+                <family>新細明體</family>
+                <pointsize>11</pointsize>
                </font>
               </property>
               <property name="focusPolicy">
                <enum>Qt::TabFocus</enum>
               </property>
               <property name="text">
-               <string>開啓檔案：</string>
+               <string>開啓檔案</string>
               </property>
              </widget>
             </item>
@@ -348,14 +349,15 @@
               </property>
               <property name="font">
                <font>
-                <family>Arial</family>
+                <family>新細明體</family>
+                <pointsize>11</pointsize>
                </font>
               </property>
               <property name="focusPolicy">
                <enum>Qt::TabFocus</enum>
               </property>
               <property name="text">
-               <string>存放路徑：</string>
+               <string>存放路徑</string>
               </property>
              </widget>
             </item>

@@ -38,8 +38,8 @@ class window_controller(QtWidgets.QWidget):
         self.ui.output_text.setText(command)
     def run(self):
         tax_text = self.ui.tax_text.currentText()
-        invoice_b_text = self.ui.invoice_b_num.toPlainText()
-        invoice_e_text = self.ui.invoice_e_num.toPlainText()
+        invoice_b_text = self.ui.invoice_b_num.text()
+        invoice_e_text = self.ui.invoice_e_num.text()
         open_text = self.ui.open_text.toPlainText()
         save_text = self.ui.save_text.toPlainText()
         # 欄位輸入值為空時的判斷顯示語句
