@@ -95,7 +95,7 @@ class window_controller(QtWidgets.QWidget):
         inv_nums.sort()
         print('全部發票號碼檢索完畢，共%d筆'%len(inv_nums))
         # print(inv_nums)
-        checked_inv = inv_nums[0]
+        checked_inv = inv_b
         for inv in inv_nums[1:]:
             if inv - checked_inv > 1:
                 result.append([tax_text, str(int(df['資料所屬年月'][0])+1), inv_title, "%08d"%(checked_inv+1), "%08d"%(inv-1), "07"])
